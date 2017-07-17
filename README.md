@@ -1,4 +1,5 @@
-#Moto city
+# Moto city
+# node-workshop
 
 This workshop introduces building a web api using Node.JS.
 
@@ -18,18 +19,18 @@ Packages we will use:
 - FS
 - Request
 
-#Steps:
-#1 Scraping
+# Steps:
+# 1 Scraping
 - Running Javascript in the terminal
 - Serving a webpage
 - Fetching data
 - Parsing data
 
-#2 Saving
+# 2 Saving
 - Introduce JSON
 - Writing to file
 
-#3 Serving
+# 3 Serving
 - Creating endpoints
 - Serving requests
 
