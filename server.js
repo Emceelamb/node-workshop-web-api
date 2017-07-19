@@ -15,7 +15,7 @@ console.log('server running on 42000.. check at localhost:42000')
 // send server response
 
 app.get('/', function(err,res,req){
-  res.send('hello to you we are going to make a craigslist scraper');
+  res.send('hello to you!!! we are going to make a craigslist scraper!!<p>fetch data by accessing /get-data<p>view listings by accessing /get-listings');
 })
 
 // function to fetch webpage
@@ -41,51 +41,55 @@ function fetchWeb(url){
   var $ = cheerio.load(req);
 
   // creates empty array to look for
-  var titles = [];
-  var url = []
-  var cities = [];
-  var prices = [];
+    var titles = [];
+    $('.result-title').each(function(index,element){
+    // save the title to array
+      titles[index] = $(this).text();
+    })
+    // log titles to console to check result
+    //console.log(titles);
 
-  // declare an object to be written
+    // do the same for other elements
+    var price = [];
+    var location = [];
+    $('.result-price').each(function(index,element){
+      price[index] = $(this).text();
+    })
 
-  var data_to_be_saved = {
-    'all_listings': []
-  };
+    $('.result-hood').each(function(index,element){
+      var loc = $(this).text();  
+      location[index] = loc.slice('2',loc.length-2)
+    })
 
-  // search for html elements with class class = 'result-title'
-  $('.result-title').each(function(index,element){
-    //get title, url, city, and price from element
-    titles[index] = $(element).text();
-    url[index] = $(element).attr('href');
-    cities[index] = url[index].slice('1', '4');
-    // prices[index]=$(element).attr('.result-price');
-
-
-
-  var listing = {
-    'name': titles[index],
-    'link': url[index],
-    'cities':cities[index],
-    // 'price':prices[index]
+    // lets log them to see the result
+    for(var x = 0; x <titles.length; x++){
+    console.log(titles[x] + ", " + price[x] + ", " + location[x]);
   }
 
-  // add listings to objec to be saved
-  data_to_be_saved.all_listings.push(listing);
+  // SAVE ABOVE TO JSON
+  // create object a variable called 'motos'
+  var results ={
+    motos:[]
+  }
+  // go through results
+  for(var i = 0; i<titles.length;i++){
+    var moto = {
+      'title': titles[i],
+      'price': price[i],
+      'location': location[i]
+    }
+    results.motos.push(moto)
+  }
 
-   console.log(data_to_be_saved);
-
-  // now we have to write to a file
-  // writeToDisk();
-
-  })
-  writeToDisk(data_to_be_saved);
-
+  // log if correct
+  console.log(results);
+  writeToFile(results);
   });
 }
 
 // function to write data
 
-function writeToDisk(data){
+function writeToFile(data){
   // convert json object to string so we can save it as txt
   var writeable_data = JSON.stringify(data);
   console.log('writing..')
@@ -103,81 +107,47 @@ app.get('/get-data', function(err,res,req){
 })
 
 
-// // create routes to read data
-app.get('/get-listings', function(err,res,req){
+// lets  create a route to view info
+
+app.get('/get-listings',function(req,res,err){
   var fetched_data;
+
+  // first read the file
   fs.readFile('data/motos.json', function(err,data){
-    console.log('reading data...');
-    fetched_data = JSON.parse(data);
+      console.log('successfully read file');
+      
+
+    // then parse
+      fetched_data = JSON.parse(data);
+      
     // user requests are made by 'request.query'
     // query = {field:value}
     // looks like http://website.com/endpoint?field=value
-    // if no query display all results
-    if(req.query.cities===null){
-      res.send(fetched_data);
-    }
-  // } else { // if there is a query we must process the data
-  //   var result = {
-  //     'listings':[]
-  //   };
-  //   // go through all listings
-  //   for(var i =0; i <fetched_data.all_listings.length; i++){
-  //     var current_listing = fetched_data.all_listings[i];
-  //     var current_city = current_listing.cities;
-  //     if(current_city == req.query.cities){
-  //       //add to result list
-  //       result.listings.push(current_listing);
-  //     }
-  //   }
-  //   res.json(result);
-  // }
-  console.log('new query: ', req.query);
+    // if no query display all results  
+      if(req.query.location==null){
+        res.send(fetched_data);
+      } else { // if there is a query we must process the data
+          var result = {
+              'listings':[]
+          };
 
-})
-});
+          // go through listings again
 
-app.get('/get-all-listings', function(request, response, error){
-  var fetched_data;
+          for(var i =0; i <fetched_data.motos.length; i++){
+              var current_listing  = fetched_data.motos[i];
+              var current_loc = current_listing.location;
 
-  //we first need to read our file, which is located in the 'data' folder, and called 'listings.json'
-  fs.readFile('data/motos.json', function(error, data){
-    console.log('successfully read file');
+              // if current location matches requested location add it to the list
+              if(current_loc == req.query.location){
+                  result.listings.push(current_listing);
+              }
+          }
 
-    //once we've read (loaded) the file, we need to parse it as JSON
-    fetched_data = JSON.parse(data);
-
-    //the user requests can be found in the 'request.query' object
-    //query = {field:value} --- which in the URL looks like http://mywebsite.com/endpoint?field=value
-    //if the user wants the whole thing
-    if(request.query.boro == null){
-      //if there is no specific query, let's just send back the whole thing
-      response.send(fetched_data);
-
-    }else{//else, if we have some sort of query, we need to do some data processing
-
-      var result = {
-        'listings' : []
-      };
-
-      //here we go through all the listings
-      for(var i = 0; i < fetched_data.all_listings.length; i++){
-
-        var current_listing = fetched_data.all_listings[i];
-        var current_boro = current_listing.cities;
-
-
-        //if the current boro matches the boro requested by the user...
-        if(current_boro == request.query.cities){
-		//we add that listing to our list
-          result.listings.push(current_listing);
-        }
+          // then respond with JSON
+          res.json(result);
       }
 
-      //once we're done, we respond with JSON result
-      response.json(result);
-    }
-
   });
-
-  console.log('new query:',request.query);
-});
+  console.log('new query:', req.query);
+})
+  
