@@ -10,7 +10,7 @@ var app = express();
 app.listen('42000');
 
 // test server by going to localhost:42000
-console.log('server running on 42000.. check at localhost:42000')
+console.log('server running on 42000..')
 
 // send server response
 

@@ -19,6 +19,9 @@ Packages we will use:
 - FS
 - Request
 
+Slides about node:
+https://docs.google.com/presentation/d/1hKBwHYkzySugjDVozQ-_BhF_NScp4FmUNVDBGpcAXpA/edit?usp=sharing
+
 # Steps:
 # 1 Scraping
 - Running Javascript in the terminal
