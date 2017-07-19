@@ -8,6 +8,9 @@ We will build a web scraper to serve data from Craiglist.
 Slides about node:
 https://docs.google.com/presentation/d/1hKBwHYkzySugjDVozQ-_BhF_NScp4FmUNVDBGpcAXpA/edit?usp=sharing
 
+url to scrape:
+https://vietnam.craigslist.org/search/mc
+
 Concepts to be covered are:
 - Using the terminal
 - Using NPM, the Node.js package manager
