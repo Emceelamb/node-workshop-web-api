@@ -46,4 +46,6 @@ What is Node?
 - Node JS is a way to run Javascript in the terminal. It allows you to write server-side code in JS.
 - First install Node (https://nodejs.org/)
 - To run Javascript in the terminal type: node *name.js
+
+Based on the diy-api by Pierre de Paz
 # node-workshop
