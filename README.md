@@ -1,5 +1,4 @@
 # Moto city
-# node-workshop
 
 This workshop introduces building a web api using Node.JS.
 
@@ -48,4 +47,4 @@ What is Node?
 - To run Javascript in the terminal type: node *name.js
 
 Based on the diy-api by Pierre de Paz
-# node-workshop
+
